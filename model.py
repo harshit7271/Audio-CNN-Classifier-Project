@@ -38,7 +38,7 @@ class ResidualBlock(nn.Module):
         return out
 
 
-class AudioCNN(nn.Module):
+class simpleResNet(nn.Module):
     def __init__(self, num_classes=50):
         super().__init__()
         self.conv1 = nn.Sequential(
