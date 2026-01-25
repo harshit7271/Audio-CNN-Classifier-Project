@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-# creating reusable residual block
+# creating reusable residual block that will be used in ResNet and help to solve vanishing gradient problem
 
 
 class ResidualBlock(nn.Module):
@@ -28,7 +28,7 @@ class ResidualBlock(nn.Module):
         out = self.conv1(x)
         out = self.bn1(out)
         out = torch.relu(out)
-        out = self.conv2(x)
+        out = self.conv2(out)
         out = self.bn2(out)
         out = torch.relu(out)
         shortcut = self.shortcut(x) if self.use_shortcut else x
@@ -42,4 +42,8 @@ class simpleResNet(nn.Module):
     def __init__(self, num_classes=50):
         super().__init__()
         self.conv1 = nn.Sequential(
-            nn.Conv2d(1, 64, 7, stride=2, padding=3, bias=False), nn.BatchNorm2d(64), )
+            nn.Conv2d(1, 64, 7, stride=2, padding=3, bias=False), nn.BatchNorm2d(64), nn.ReLU(inplace=True), nn.MaxPool2d(3, stride=2, padding=1))
+        self.layer1 = nn.ModuleList([ResidualBlock(64, 64) for i in range(3)])
+        self.layer2 = nn.ModuleList([ResidualBlock(64, 64) for i in range(4)])
+        self.layer3 = nn.ModuleList([ResidualBlock(64, 64) for i in range(6)])
+        self.layer4 = nn.ModuleList([ResidualBlock(64, 64) for i in range(3)])
