@@ -88,6 +88,7 @@ def mixup_data(x, y):
     # (o.7 * audio1) + (0.3 * audio2)
     mixed_x = lam * x + (1 - lam) * x[index, :]
     y_a, y_b = y, y[index]
+    return mixed_x, y_a, y_b, lam
 
 
 @app.function(image=image, gpu="A10G", volumes={"/data": volume, "/models": model_volume}, timeout=60 * 60 * 3)
