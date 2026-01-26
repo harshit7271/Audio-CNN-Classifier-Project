@@ -1,5 +1,6 @@
 from pathlib import Path
 import sys
+from typing import Self
 import pandas as pd
 import modal
 
@@ -35,8 +36,17 @@ class ESC50Dataset(Dataset):
         self.transform = transform
         # filter the training and validation data
 
-        if self.split == "train":
+        if split == "train":
             self.metadata = self.metadata[self.metadata["fold"] != 5]
+        else:
+            self.metadata = self.metadata[self.metadata["fold"] == 5]
+
+        # sorting the unique classes only
+        self.classes = sorted(self.metadata['category'].unique())
+        self.class_to_idx = {cls: idx for idx, cls in enumerate(
+            self.classes)}   # encoding in short
+        self.metadata['label'] = self.metadata['category'].map(
+            self.class_to_idx)  # mapping the label and creating new column
 
 
 @app.function(image=image, gpu="A10G", volumes={"/data": volume, "/models": model_volume}, timeout=60 * 60 * 3)
