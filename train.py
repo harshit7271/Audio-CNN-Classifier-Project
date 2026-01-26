@@ -4,7 +4,9 @@ from typing import Self
 import pandas as pd
 import modal
 
+import torch
 from torch.utils.data import Dataset
+import torchaudio
 
 app = modal.App("audio-cnn-classifier")
 
@@ -47,6 +49,19 @@ class ESC50Dataset(Dataset):
             self.classes)}   # encoding in short
         self.metadata['label'] = self.metadata['category'].map(
             self.class_to_idx)  # mapping the label and creating new column
+
+    def __len__(self):
+        return len(self.metadata)
+
+    # will create a function to extract and sample from the dataset
+    def __getitem__(self, idx):
+        row = self.metadata.iloc[idx]
+        audio_path = self.data_dir / "audio" / row['filename']
+
+        waveform, sample_rate = torchaudio.load(audio_path)
+
+        if waveform.shape[0] > 1:
+            waveform = torch.mean(waveform, dim=0, keepdim=True)
 
 
 @app.function(image=image, gpu="A10G", volumes={"/data": volume, "/models": model_volume}, timeout=60 * 60 * 3)
