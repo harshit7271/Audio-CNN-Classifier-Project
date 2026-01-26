@@ -140,7 +140,7 @@ def train():
         data_dir=esc50_dir, metadata_file=esc50_dir / "meta" / "esc50.csv", split="train", transform=train_transform)
 
     validation_dataset = ESC50Dataset(
-        data_dir=esc50_dir, metadata_file=esc50_dir / "meta" / "esc50.csv", split="validation", transform=validation_transform)
+        data_dir=esc50_dir, metadata_file=esc50_dir / "meta" / "esc50.csv", split="test", transform=validation_transform)
 
     print("Training samples: " + str(len(train_dataset)))
     print("Validation samples: " + str(len(validation_dataset)))

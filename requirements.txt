@@ -4,3 +4,4 @@ torchaudio
 torch
 tqdm
 tensorboard
+torchcodec
