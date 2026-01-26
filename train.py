@@ -63,6 +63,13 @@ class ESC50Dataset(Dataset):
         if waveform.shape[0] > 1:
             waveform = torch.mean(waveform, dim=0, keepdim=True)
 
+        if self.transform:
+            spectrogram = self.transform(waveform)
+        else:
+            spectrogram = waveform  # if no transform is applied
+
+        return spectrogram, row['label']
+
 
 @app.function(image=image, gpu="A10G", volumes={"/data": volume, "/models": model_volume}, timeout=60 * 60 * 3)
 def train():
