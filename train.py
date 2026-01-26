@@ -1,6 +1,9 @@
+from pathlib import Path
 import sys
-
+import pandas as pd
 import modal
+
+from torch.utils.data import Dataset
 
 app = modal.App("audio-cnn-classifier")
 
@@ -19,6 +22,21 @@ image = (modal.Image.debian_slim()
 
 volume = modal.Volume.from_name("esc50-data", create_if_missing=True)
 model_volume = modal.Volume.from_name("esc-model", create_if_missing=True)
+
+# to load and get the dataset in quick manner
+
+
+class ESC50Dataset(Dataset):
+    def __init__(self, data_dir, metadata_file, split="train", transform=None):
+        super().__init__()
+        self.data_dir = Path(data_dir)
+        self.metadata = pd.read_csv(metadata_file)
+        self.split = split
+        self.transform = transform
+        # filter the training and validation data
+
+        if self.split == "train":
+            self.metadata = self.metadata[self.metadata["fold"] != 5]
 
 
 @app.function(image=image, gpu="A10G", volumes={"/data": volume, "/models": model_volume}, timeout=60 * 60 * 3)
