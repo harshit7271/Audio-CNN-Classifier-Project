@@ -1,7 +1,25 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
 import { Button } from "~/components/ui/button";
 
 export default function HomePage() {
+  const [isLoading, setIsLoading] = useState(false);  // we create a useState to track if w uploading or analysing the file or not
+  
+  const[fileName, setFileName] = useState("");
+
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setFileName(file.name);
+    setIsLoading(true)
+
+  };
+
   return (
     <main className="min-h-screen bg-stone-50 p-8">
       <div className="mx-auto max-w-[60%]">
@@ -16,10 +34,16 @@ export default function HomePage() {
                     type="file" 
                     accept=".wav" 
                     id="file-upload"
+                    disabled={isLoading}
                     className="absolute inset-0 w-full cursor-pointer opacity-0"
                   />
-                  <Button className="border-stone-300" variant="outline" size="lg">
-                    Choose WAV File
+                  <Button 
+                    disabled={isLoading}
+                    className="border-stone-300" 
+                    variant="outline" 
+                    size="lg"
+                  >
+                    {isLoading ? "Analysing.." : "Choose WAV File"}
                   </Button>
               </div>
             </p>
