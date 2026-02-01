@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { set } from "zod/v4";
 import { Button } from "~/components/ui/button";
-import { Card, CardContent } from "~/components/ui/card";
+import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { ObjectFlags } from "typescript";
 
 interface Prediction {
@@ -42,9 +42,15 @@ function splitLayers(visualization: VisualizationData) {
     if (!name.includes(".")) {
       main.push([name, data])
     } else {
-      const[parent] = name.split(".");    // we do this bcz we will split the internal feature map and block by (.) [refer to model.py]
+      const [parent] = name.split(".");    // we do this bcz we will split the internal feature map and block by (.) [refer to model.py]
+      if (parent === undefined) continue; 
+
+      if (!internals[parent]) internals[parent] = [];
+      internals[parent].push([name, data]);
     }
-  } 
+  }
+  
+  return {main, internals};
 }
 
 export default function HomePage() {
@@ -111,6 +117,8 @@ export default function HomePage() {
     };
   };
 
+  const {main, internals} = vizData ? splitLayers(vizData?.visualization) : {main: [], internals: {} };
+
   return (
     <main className="min-h-screen bg-stone-50 p-8">
       <div className="mx-auto max-w-[60%]">
@@ -157,6 +165,25 @@ export default function HomePage() {
               <p className="text-red-600">Error :{error}</p>
             </CardContent>
           </Card>
+        )}
+
+        {vizData && (
+          <div className="space-y-8">
+            <Card>
+              <CardHeader>Here are the top predictions </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {vizData.predictions.slice(0,3).map((pred, i) => (
+                    <div key={pred.class} className="space-y-2.5">
+                      <div className="flex items-center justify-between">
+                        <span>{pred.class.replaceAll("_", " ")}</span>
+                      </div>
+                    </div>
+                    ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         )}
       </div>
     </main>
