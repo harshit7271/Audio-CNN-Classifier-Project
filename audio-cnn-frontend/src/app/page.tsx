@@ -7,6 +7,7 @@ import { set } from "zod/v4";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { ObjectFlags } from "typescript";
+import { Progress } from "~/components/ui/progress";
 
 interface Prediction {
   class: string;
@@ -160,6 +161,11 @@ export default function HomePage() {
         }
 
         const data: ApiResponse = await response.json();
+       
+        console.log("RAW predictions:", JSON.stringify(data.predictions, null, 2));
+        console.log("First confidence:", data.predictions[0]?.confidence);
+        console.log("Sum of confidences:", data.predictions.reduce((sum, p) => sum + p.confidence, 0));
+
         setVizData(data);
 
       } catch (err) {
@@ -229,19 +235,37 @@ export default function HomePage() {
         {vizData && (
           <div className="space-y-8">
             <Card>
-              <CardHeader>Here are the top predictions </CardHeader>
+              <CardHeader className="text-lg font-semibold">Here are the top predictions : </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   {vizData.predictions.slice(0,3).map((pred, i) => (
                     <div key={pred.class} className="space-y-2.5">
                       <div className="flex items-center justify-between">
+                        <div className="text-md font-medium text-stone-700">
+                        {getEmojiForClass(pred.class)}{" "}                           
                         <span>{pred.class.replaceAll("_", " ")}</span>
+                        </div>
+                        <Badge variant={i == 0 ? "default" : "secondary"}>{Math.min((pred.confidence * 100)).toFixed(1)}%</Badge>
                       </div>
+                      <Progress value={pred.confidence * 100}  className="h-2"/>
                     </div>
                     ))}
                 </div>
               </CardContent>
             </Card>
+
+            <div className="grid grid-col-1 gap-6 lg:grid-cols-2">
+              <Card>
+                <CardHeader className="text-stone-900 font-bold">
+                  Input Spectrogram
+                </CardHeader>
+                <CardContent>
+                  {/* Feature Map */}
+                  {/* Color scale */}
+                </CardContent>
+                  
+              </Card>
+            </div>
           </div>
         )}
       </div>
