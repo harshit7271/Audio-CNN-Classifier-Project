@@ -38,6 +38,16 @@
 🥫 can_opening: 0.01%
 
 ---
+#  UI Components
+
+![UI Demo 1](UIDemos/Screenshot%202026-02-02%20035446.png)
+
+![UI Demo 2](UIDemos/Screenshot%202026-02-02%20035458.png)  
+
+![UI Demo 3](UIDemos/Screenshot%202026-02-02%20035507.png)
+
+![UI Demo 4](UIDemos/Screenshot%202026-02-02%20035517.png)
+
 
 ##  Architecture
 
@@ -138,10 +148,6 @@ Splits: 5-fold CV (Fold 5 = test)
 Best: Epoch 100, Val Acc: 83.4%
 ```
 ---
-#  UI Components
-
-
-![UI Demo 1](UIDemos/Screenshot%202026-02-02%20035446.png)
 
 
 ---
