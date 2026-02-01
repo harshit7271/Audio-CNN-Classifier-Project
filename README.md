@@ -1,4 +1,4 @@
-# Audio CNN Classifier & Visualizer 🧠🎵
+# Audio CNN Classifier & Visualizer 
 
 [![Model Accuracy](https://img.shields.io/badge/Model%20Accuracy-83.4%25-brightgreen.svg)]()
 [![Next.js](https://img.shields.io/badge/Next.js-14-blue.svg)](https://nextjs.org/)
@@ -10,7 +10,7 @@
 
 ---
 
-## ✨ Features
+##  Features
 
 - **83.4% Top-1 Accuracy** on ESC-50 (50 environmental sounds)
 - **Live Feature Maps** - Watch ResNet-50 layers activate
@@ -20,7 +20,7 @@
 - **Next.js 14 App Router** + TypeScript + shadcn/ui
 - **Base64 WAV** upload → instant predictions
 ---
-## 📊 Performance
+##  Performance
 
 | Metric | Value |
 |--------|-------|
@@ -39,7 +39,7 @@
 
 ---
 
-## 🏗️ Architecture
+##  Architecture
 
 **ResNet-50 for Audio Spectrograms** (3-4-6-3 blocks):
 
@@ -53,7 +53,12 @@
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
+
+```bash
+git clone https://github.com/harshit7271/Audio-CNN-Classifier-Project.git
+cd Audio-CNN-Classifier-Project
+```
 
 ### Backend (Modal)
 ```bash
