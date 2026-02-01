@@ -110,12 +110,12 @@ def train():
 
     train_transform = nn.Sequential(
         T.MelSpectrogram(
-            sample_rate=22050,
+            sample_rate=22050,  # chnage it to 44100
             n_fft=1024,
             hop_length=512,
             n_mels=128,
             f_min=0,
-            f_max=11025
+            f_max=11025   # this to 22050
         ),
         # convert to decibles
         T.AmplitudeToDB(),
@@ -126,12 +126,12 @@ def train():
 
     validation_transform = nn.Sequential(
         T.MelSpectrogram(
-            sample_rate=22050,
+            sample_rate=22050,    # change it to 44100
             n_fft=1024,
             hop_length=512,
             n_mels=128,
             f_min=0,
-            f_max=11025
+            f_max=11025      # change it to 22050
         ),
         T.AmplitudeToDB()
     )

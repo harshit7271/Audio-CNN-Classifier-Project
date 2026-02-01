@@ -6,6 +6,7 @@ import { useState } from "react";
 import { set } from "zod/v4";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
+import { ObjectFlags } from "typescript";
 
 interface Prediction {
   class: string;
@@ -32,6 +33,18 @@ interface ApiResponse {
   visualization: VisualizationData;
   input_spectrogram: LayerData;
   waveform: WaveformData;
+}
+
+function splitLayers(visualization: VisualizationData) {
+  const main: [string, LayerData][] = []   // features from top layers will be appended here
+  const internals: Record<string, [string, LayerData][]> = {};     // array for the internal layers  
+  for (const [name, data] of Object.entries(visualization)) {
+    if (!name.includes(".")) {
+      main.push([name, data])
+    } else {
+      const[parent] = name.split(".");    // we do this bcz we will split the internal feature map and block by (.) [refer to model.py]
+    }
+  } 
 }
 
 export default function HomePage() {
