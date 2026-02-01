@@ -1,9 +1,11 @@
 "use client";
 
+import { Badge } from "~/components/ui/badge";
 import Link from "next/link";
 import { useState } from "react";
 import { set } from "zod/v4";
 import { Button } from "~/components/ui/button";
+import { Card, CardContent } from "~/components/ui/card";
 
 interface Prediction {
   class: string;
@@ -83,7 +85,11 @@ export default function HomePage() {
         setVizData(data);
 
       } catch (err) {
-        seterror(err instanceof Error ? err.message : "Unknown Error");
+        seterror(err instanceof Error ? err.message : "Unknown Error",
+
+        );
+      } finally {
+        setIsLoading(false);
       }
     };
     reader.onerror = () => {
@@ -97,7 +103,7 @@ export default function HomePage() {
       <div className="mx-auto max-w-[60%]">
         <div className="mb-12 text-center">
           <h1 className="mb-4 text-4xl font-bold tracking-tight text-stone-900">AUDIO CNN VISUALIZER
-            <p className="text-md mb-8 text-lg text-stone-600">Upload a WAV file to see the model's feature maps and predictions.
+            <div className="text-md mb-8 text-lg text-stone-600">Upload a WAV file to see the model's feature maps and predictions.
 
 
               <div className="flex flex-col items-center">
@@ -119,9 +125,26 @@ export default function HomePage() {
                     {isLoading ? "Analysing.." : "Choose WAV File"}
                   </Button>
               </div>
-            </p>
+
+              {fileName && (
+                <Badge 
+                  variant="secondary" 
+                  className="text-stone-700 mt-4 bg-stone-200"
+                >
+                  {fileName}
+                </Badge>
+              )}
+            </div>
           </h1>
         </div>
+
+        {error && (
+          <Card className="mb-8 border-red-300 bg-red-100">
+            <CardContent>
+              <p className="text-red-600">Error :{error}</p>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </main>
   );
