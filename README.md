@@ -141,11 +141,7 @@ Best: Epoch 100, Val Acc: 83.4%
 #  UI Components
 
 
-![Top Preds]("Audio-CNN-Classifier-Project\UIDemos\Screenshot 2026-02-02 035446.png")
-
-- Input Spectrogram
-- Audio Waveform
-- Convolutional Layer Outputs
+![UI Demo 1](UIDemos/Screenshot%202026-02-02%20035446.png)
 
 
 ---
