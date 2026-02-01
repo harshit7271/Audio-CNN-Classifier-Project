@@ -75,8 +75,6 @@ pnpm install
 pnpm dev
 ```
 
-Live API: https://harshit7271--audio-cnn-classifier-audioclassifier-inference.modal.run/
-
 ---
 ## Structure
 ├── frontend/                 # Next.js 14 T3 Stack
