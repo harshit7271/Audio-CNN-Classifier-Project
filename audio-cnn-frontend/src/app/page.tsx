@@ -35,6 +35,63 @@ interface ApiResponse {
   waveform: WaveformData;
 }
 
+const ESC50_EMOJI_MAP: Record<string, string> = {
+  dog: "🐕",
+  rain: "🌧️",
+  crying_baby: "👶",
+  door_wood_knock: "🚪",
+  helicopter: "🚁",
+  rooster: "🐓",
+  sea_waves: "🌊",
+  sneezing: "🤧",
+  mouse_click: "🖱️",
+  chainsaw: "🪚",
+  pig: "🐷",
+  crackling_fire: "🔥",
+  clapping: "👏",
+  keyboard_typing: "⌨️",
+  siren: "🚨",
+  cow: "🐄",
+  crickets: "🦗",
+  breathing: "💨",
+  door_wood_creaks: "🚪",
+  car_horn: "📯",
+  frog: "🐸",
+  chirping_birds: "🐦",
+  coughing: "😷",
+  can_opening: "🥫",
+  engine: "🚗",
+  cat: "🐱",
+  water_drops: "💧",
+  footsteps: "👣",
+  washing_machine: "🧺",
+  train: "🚂",
+  hen: "🐔",
+  wind: "💨",
+  laughing: "😂",
+  vacuum_cleaner: "🧹",
+  church_bells: "🔔",
+  insects: "🦟",
+  pouring_water: "🚰",
+  brushing_teeth: "🪥",
+  clock_alarm: "⏰",
+  airplane: "✈️",
+  sheep: "🐑",
+  toilet_flush: "🚽",
+  snoring: "😴",
+  clock_tick: "⏱️",
+  fireworks: "🎆",
+  crow: "🐦‍⬛",
+  thunderstorm: "⛈️",
+  drinking_sipping: "🥤",
+  glass_breaking: "🔨",
+  hand_saw: "🪚",
+};
+
+const getEmojiForClass = (className: string): string => {
+  return ESC50_EMOJI_MAP[className] || "🔈";
+};
+
 function splitLayers(visualization: VisualizationData) {
   const main: [string, LayerData][] = []   // features from top layers will be appended here
   const internals: Record<string, [string, LayerData][]> = {};     // array for the internal layers  
@@ -69,6 +126,8 @@ export default function HomePage() {
     setIsLoading(true)
     seterror(null);
     setVizData(null);
+    
+    
 
     const reader = new FileReader();
     reader.readAsArrayBuffer(file);
