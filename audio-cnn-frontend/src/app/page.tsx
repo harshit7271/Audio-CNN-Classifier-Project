@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { set } from "zod/v4";
 import { Button } from "~/components/ui/button";
 
 interface Prediction {
@@ -32,7 +33,7 @@ interface ApiResponse {
 }
 
 export default function HomePage() {
-  const[vizData, setVizData] = useState<null>(null);
+  const[vizData, setVizData] = useState<ApiResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);  // we create a useState to track if w uploading or analysing the file or not
   const[fileName, setFileName] = useState("");
   const[error, seterror] = useState<string | null>(null);
@@ -45,7 +46,50 @@ export default function HomePage() {
 
     setFileName(file.name);
     setIsLoading(true)
+    seterror(null);
+    setVizData(null);
 
+    const reader = new FileReader();
+    reader.readAsArrayBuffer(file);
+    reader.onload = async () => {
+      try {
+        const arrayBuffer = reader.result as ArrayBuffer;
+
+      const base64String = btoa(
+
+        new Uint8Array(arrayBuffer).reduce(
+          (data, byte) => data + String.fromCharCode(byte),
+           "",
+          ),
+        );
+
+        const response = await fetch("https://harshit7271--audio-cnn-classifier-audioclassifier-inference.modal.run/",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({audio_data: base64String})
+            
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error(`API request failed : ${response.status}`);
+        
+        }
+
+        const data: ApiResponse = await response.json();
+        setVizData(data);
+
+      } catch (err) {
+        seterror(err instanceof Error ? err.message : "Unknown Error");
+      }
+    };
+    reader.onerror = () => {
+      seterror("FAILED TO READ FILE");
+      setIsLoading(false);
+    };
   };
 
   return (
@@ -63,6 +107,7 @@ export default function HomePage() {
                     accept=".wav" 
                     id="file-upload"
                     disabled={isLoading}
+                    onChange={handleFileChange}
                     className="absolute inset-0 w-full cursor-pointer opacity-0"
                   />
                   <Button 
