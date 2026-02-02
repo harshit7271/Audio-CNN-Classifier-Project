@@ -6,7 +6,7 @@
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0-orange.svg)](https://pytorch.org/)
 [![Modal](https://img.shields.io/badge/Modal-Serverless-red.svg)](https://modal.com/)
 
-**Production-ready audio-CNN classification** trained on ResNet architecture which i created from scratch, then trained the model on **ESC-50 DATASET** achieving **83.4% accuracy**. Live **feature map visualization**, **ResNet-50**, **Modal serverless**, **TensorBoard**, **Next.js 14 + React**.
+**Production-ready audio-CNN classification** trained on **ResNet architecture** which i **created from scratch**, then trained the model on **ESC-50 DATASET** achieving **83.4% accuracy**. Live **feature map visualization**, **ResNet-50**, **Modal serverless**, **TensorBoard**, **Next.js 14 + React**.
 
 ---
 
