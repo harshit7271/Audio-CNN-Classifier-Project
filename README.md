@@ -1,12 +1,12 @@
 # Audio CNN Classifier & Visualizer 
 
 [![Model Accuracy](https://img.shields.io/badge/Model%20Accuracy-83.4%25-brightgreen.svg)]()
-[![Next.js](https://img.shields.io/badge/Next.js-14-blue.svg)](https://nextjs.org/)
-[![React](https://img.shields.io/badge/React-18-blue.svg)](https://reactjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-15-blue.svg)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19-blue.svg)](https://reactjs.org/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0-orange.svg)](https://pytorch.org/)
 [![Modal](https://img.shields.io/badge/Modal-Serverless-red.svg)](https://modal.com/)
 
-**Production-ready audio-CNN classification** trained on **ResNet architecture** which i **created from scratch**, then trained the model on **ESC-50 DATASET** achieving **83.4% accuracy**. Live **feature map visualization**, **ResNet-50**, **Modal serverless**, **TensorBoard**, **Next.js 14 + React**.
+**Production-ready audio-CNN classification** trained on **ResNet architecture** which i **created from scratch**, then trained the model on **ESC-50 DATASET** achieving **83.4% accuracy**. Live **feature map visualization**, **ResNet-50**, **Modal serverless**, **TensorBoard**, **Next.js 15 + React 19**.
 
 ---
 
@@ -17,7 +17,7 @@
 - **Real-time Waveform** + Mel Spectrogram visualization
 - **50-class Emoji Support** 🐦👏🚁🔨 (chirping_birds, clapping, etc.)
 - **Modal A10G GPU** serverless inference (~45ms)
-- **Next.js 14 App Router** + TypeScript + shadcn/ui
+- **Next.js 15 App Router** + React 19 + TypeScript + shadcn/ui + Tailwind CSS 4
 - **Base64 WAV** upload → instant predictions
 ---
 ##  Performance
@@ -95,34 +95,67 @@ modal deploy main.py
 
 ### Frontend
 ```bash
-cd frontend
+cd audio-cnn-frontend
 pnpm install
 pnpm dev
 ```
 
+**Frontend Stack:**
+- **Next.js 15.2.3** - App Router with Turbo mode
+- **React 19.0.0** - Latest React with concurrent features
+- **TypeScript 5.8.2** - Strict type checking
+- **Tailwind CSS 4.0.15** - Utility-first styling
+- **shadcn/ui** - Accessible component library (Badge, Button, Card, Progress)
+- **Radix UI** - Unstyled, accessible primitives
+- **T3 Stack** - Type-safe environment validation
+- **Geist Font** - Modern typography
+
 ---
 ## Structure
-├── frontend/                 # Next.js 14 T3 Stack
+```
+├── audio-cnn-frontend/              # Next.js 15 + React 19 (T3 Stack)
+│   ├── src/
+│   │   ├── app/
+│   │   │   ├── page.tsx             # Main page with file upload & visualization
+│   │   │   └── layout.tsx           # Root layout with Geist font
+│   │   ├── components/
+│   │   │   └── ui/
+│   │   │       ├── FeatureMap.tsx   # SVG-based feature map visualization
+│   │   │       ├── Waveform.tsx     # Audio waveform SVG renderer
+│   │   │       ├── ColorScale.tsx   # Gradient color legend
+│   │   │       ├── badge.tsx        # shadcn/ui Badge component
+│   │   │       ├── button.tsx       # shadcn/ui Button component
+│   │   │       ├── card.tsx         # shadcn/ui Card component
+│   │   │       └── progress.tsx     # shadcn/ui Progress component
+│   │   ├── lib/
+│   │   │   ├── utils.ts             # cn() utility (clsx + tailwind-merge)
+│   │   │   └── colors.ts            # Feature map color mapping (RGB gradients)
+│   │   ├── styles/
+│   │   │   └── globals.css          # Tailwind CSS imports
+│   │   └── env.js                   # T3-OSS environment validation
+│   ├── public/
+│   │   └── favicon.ico
+│   ├── package.json                 # Dependencies & scripts
+│   ├── tsconfig.json                # TypeScript config (path aliases: ~/*)
+│   ├── next.config.js               # Next.js configuration
+│   ├── tailwind.config.js           # Tailwind CSS configuration
+│   └── components.json              # shadcn/ui configuration
 
-│   ├── app/                 # App Router
-
-│   ├── components/ui/       # shadcn/ui (Badge, Card, Progress)
-
-│   └── lib/utils.ts        # API helpers
-
-├── backend/                 # Modal + PyTorch
-
-│   ├── main.py/               # FastAPI + AudioClassifier
-
-|   ├── train.py/             
-
-│   ├── model.py/            # ResNet-50 (16 blocks)
-
-│   ├── requirements.txt/
-
-│   └── best_model.pth/      # 83.4% checkpoint
-
+├── backend/                         # Modal + PyTorch
+│   ├── main.py                      # FastAPI + AudioClassifier endpoint
+│   ├── train.py                     # Training script
+│   ├── model.py                     # ResNet-50 (16 blocks)
+│   ├── requirements.txt             # Python dependencies
+│   └── best_model.pth               # 83.4% checkpoint (on Modal volume)
+│
+├── tensorboard_logs/                # Training logs
+│   └── run_*/                       # TensorBoard event files
+│
+├── UIDemos/                         # UI screenshots
+│   └── Screenshot*.png
+│
 └── README.md
+```
 
 ---
 
@@ -135,11 +168,49 @@ spectrogram = MelSpectrogram(sample_rate=44100, n_mels=128)
 output, feature_maps = model(spectrogram, return_feature_maps=True)
 ```
 
-## Frontend(React)
+## Frontend (Next.js 15 + React 19)
 ```tsx
-const base64String = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
-const { predictions, visualization, waveform } = await response.json();
+// File upload → Base64 encoding → API call
+const reader = new FileReader();
+reader.readAsArrayBuffer(file);
+reader.onload = async () => {
+  const arrayBuffer = reader.result as ArrayBuffer;
+  const base64String = btoa(
+    new Uint8Array(arrayBuffer).reduce(
+      (data, byte) => data + String.fromCharCode(byte), ""
+    )
+  );
+  
+  const response = await fetch(API_ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ audio_data: base64String })
+  });
+  
+  const { predictions, visualization, input_spectrogram, waveform } = 
+    await response.json();
+};
+
+// Layer splitting for visualization
+function splitLayers(visualization) {
+  const main = [];      // Top-level layers (conv1, layer1, etc.)
+  const internals = {}; // Internal layers (layer1.0.conv1, etc.)
+  // Groups layers by parent block for nested visualization
+}
 ```
+
+**Frontend Features:**
+- **Client-side WAV upload** with FileReader API
+- **Base64 encoding** for audio transmission
+- **Real-time feature map visualization** via SVG rendering
+- **Interactive layer exploration** (main layers + internal block layers)
+- **Top 3 predictions** with confidence progress bars
+- **50-class emoji mapping** (ESC-50 categories)
+- **Responsive grid layout** (Tailwind CSS)
+- **Color-coded feature maps** (blue→white→orange gradient)
+- **Waveform visualization** (SVG path rendering)
+- **Error handling** with user-friendly messages
+- **Loading states** during API inference
 ---
 
 # Key Features
@@ -151,9 +222,13 @@ const { predictions, visualization, waveform } = await response.json();
 
 - Waveform Downsampling - Max 8000 samples for viz
 
-- Layer Splitting - `splitLayers()` for block visualization
-
-- ESC-50 Emojis - 50-class mapping (🐕🌧️👶🚪 etc.)
+- **Layer Splitting** - `splitLayers()` groups main layers vs internal block layers for nested visualization
+- **ESC-50 Emojis** - 50-class mapping (🐕🌧️👶🚪 etc.) with fallback icons
+- **SVG-based Visualizations** - FeatureMap & Waveform use scalable SVG rendering
+- **Color Gradient Mapping** - Custom RGB interpolation for feature map values (-1 to +1)
+- **Responsive Design** - Mobile-friendly grid layouts with Tailwind CSS
+- **Type Safety** - Full TypeScript coverage with strict mode enabled
+- **Path Aliases** - `~/*` imports for cleaner code organization
 
 ---
 # Training
